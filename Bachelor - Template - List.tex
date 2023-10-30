@@ -1,0 +1,223 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, top=30mm, headsep=10mm, bottom=27mm, left=25mm, right=25mm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lipsum} % For generating dummy text
+\usepackage{lastpage} % For total page number
+\usepackage{titleref}
+\usepackage{array}
+\usepackage{tikzpagenodes} % Provides the current page text area node
+\usepackage{graphicx} %LaTeX package to import graphics
+\graphicspath{{images/}} % configuring the graphicx package
+\usepackage{url} 
+%\usepackage{parskip}
+%\usepackage{indentfirst}
+\usepackage{ragged2e}
+
+% PAGE STYLE SETUP
+\pagestyle{fancy}
+\fancyhf{} % Clear all headers and footers
+
+% Indentation
+%\setlength{\parindent}{5mm}
+%\setlength{\parindent}{5mm}
+
+
+
+
+% Grid packages
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\newif\ifshowgrid
+\newif\ifshowoverlay
+
+% Grid Toggle:
+%\showgridtrue  % Comment to hide the grid - Toggles all grids
+\showoverlaytrue % Comment to hide the super grid
+
+% Main Debug Grid
+\AddToShipoutPicture{%
+  \ifshowgrid
+    \begin{tikzpicture}[overlay,remember picture]
+        % Draw grid with step size of 1cm
+        \begin{scope}[shift={(0,-3mm)}] % Shift the grid 2 mm
+        \draw[thick,red!30!black!30,step=1cm,transform shape=false] (current page.north west) grid (current page.south east);
+            \end{scope}
+        % Draw super grid with step size of 5mm
+        \ifshowoverlay
+                \begin{scope}[shift={(0,-3mm)}] % Shift the grid 2 mm
+          \draw[thick,red!30!black!30,step=5mm] (current page.north west) grid (current page.south east);
+      \end{scope}
+
+        % Accentuate center lines
+        \draw[blue,thick] (current page.north) -- (current page.south);
+        \draw[blue,thick] (current page.west) -- (current page.east);
+
+        % Accentuate margins (assuming 25mm left and right, 30mm top and bottom)
+        \draw[red,thick] ([xshift=25mm]current page.north west) -- ([xshift=25mm]current page.south west);
+        \draw[red,thick] ([xshift=-25mm]current page.north east) -- ([xshift=-25mm]current page.south east);
+        \draw[red,thick] ([yshift=-30mm]current page.north west) -- ([yshift=-30mm]current page.north east);
+        \draw[red,thick] ([yshift=27mm]current page.south west) -- ([yshift=27mm]current page.south east);
+          \fi
+    \end{tikzpicture}%
+  \fi
+}
+
+
+
+
+% HEADER CONFIGURATION
+
+\fancyhead[C]{
+\begin{tikzpicture}[remember picture,overlay] %Drawing a static Line
+    % Adjust the y-coordinate to move the line up or down
+    \draw[line width=0.7pt] ([yshift=5mm]current page text area.north west) -- ([yshift=5mm]current page text area.north east);
+  \end{tikzpicture}
+  \begin{tikzpicture}[remember picture, overlay]
+    % Edit inner sep for header position from top of page
+    \node[anchor=north, inner sep=7.5mm] at (current page.north) {
+      \begin{minipage}{\textwidth}
+        %\centering
+        \fontsize{9}{11}\selectfont
+        \begin{tabular}{@{}*{5}{p{0.1775\textwidth}}@{}}
+        	 Valid for: & Institute: & Date: & Document type: & Author: \\
+          \textbf{\University} & \textbf{\Institute} & \textbf{\Date} & \textbf{\DocumentType} &   \fontsize{7}{11}\selectfont\textbf{\Author} \\
+          Project & No. of pages: & Revised Date: & Document ID: & Publisher: \\
+          \textbf{\Project} & \textbf{\TotalPages} & \textbf{\DateRevised} & \textbf{\DocumentID} & \fontsize{7}{11}\selectfont\textbf{\Publisher} \\
+        \end{tabular}
+      \end{minipage}
+    };
+  \end{tikzpicture}
+  \vspace{4mm}
+}
+
+% FOOTER CONFIGURATION
+
+\usepackage{adjustbox}
+
+\fancyfoot[C]{
+\begin{tikzpicture}[remember picture,overlay] %Drawing a static Line
+    % Adjust the y-coordinate to move the line up or down
+    \draw[line width=0.7pt] ([yshift=0mm]current page text area.south west) -- ([yshift=0mm]current page text area.south east);
+  \end{tikzpicture}
+  
+\vspace{-10mm}
+  \begin{minipage}{\textwidth}
+    \begin{adjustbox}{valign=t}
+      \begin{minipage}[t]{0.1\textwidth}
+        \ifodd\value{page} \hfill \else \raggedright \thepage/\pageref{LastPage} \fi
+      \end{minipage}
+    \end{adjustbox}%
+    \begin{adjustbox}{valign=t}
+      \begin{minipage}[t]{0.8\textwidth}
+        \centering \DocumentID: - \Title
+      \end{minipage}
+    \end{adjustbox}%
+    \begin{adjustbox}{valign=t}
+      \begin{minipage}[t]{0.1\textwidth}
+        \ifodd\value{page} \raggedleft \thepage/\pageref{LastPage} \else \hfill \fi
+      \end{minipage}
+    \end{adjustbox}
+  \end{minipage}
+  
+}
+
+
+% Custom section and subsection formatting
+\usepackage{titlesec}
+\titleformat{\section}{\fontsize{14}{16}\selectfont\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\fontsize{13}{15}\selectfont\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\fontsize{12}{14}\selectfont\bfseries}{\thesubsubsection}{1em}{}
+
+
+% Metadata - ADD HERE FOR CUSTOMIZATION
+\def\University{USN}
+\def\Project{Fluid Dynamics}
+
+\def\Institute{TNM}
+\def\TotalPages{\pageref{LastPage} }
+
+\def\Date{\today}
+\def\DateRevised{-}
+
+\def\DocumentID{T-1.0}
+\def\DocumentType{Template}
+
+\def\Author{Isak Lars Haukeland}
+\def\Publisher{Isak Lars Haukeland}
+
+\def\Title{\LaTeX{} Demo Title}
+
+
+% 	MAIN DOCUMENT BEGINS HERE
+\begin{document}
+
+
+\thispagestyle{fancy} % Apply fancy style to the first page
+
+%\raggedright
+
+% Left-aligned title below the top-text
+\vspace{1em}
+{\raggedright
+\textbf{\fontsize{18}{21}\selectfont \Title}\\
+\par}
+
+\section{First Header}
+\lipsum[1-2]
+
+\subsection{First Subheader}
+\lipsum[3-4]
+
+\subsubsection{First Sub-Subheader}
+\lipsum[5-6]
+
+\subsubsection{Second Sub-Subheader}
+\lipsum[5-6]
+
+\begin{math}
+E=mc^2
+\end{math} is typeset in a paragraph using inline math mode---as is $E=mc^2$, and so too is \(E=mc^2\).
+
+The mass-energy equivalence is described by the famous equation
+\[ E=mc^2 \] discovered in 1905 by Albert Einstein. 
+
+In natural units ($c = 1$), the formula expresses the identity
+\begin{equation}
+E=m
+\end{equation}
+
+\newpage % Add a new page to demonstrate footer
+
+\subsubsection{Third Sub-Subheader}
+\lipsum[5-6]
+
+Some of the \textbf{greatest}
+discoveries in \underline{science} 
+were made by \textbf{\textit{accident}}.
+Some of the greatest \emph{discoveries} in science 
+were made by accident.
+\textit{Some of the greatest \emph{discoveries} 
+in science were made by accident.}
+
+\textbf{Some of the greatest \emph{discoveries} 
+in science were made by accident.}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{LionIcon}
+  \caption{\textit{Check out this demo image}}
+\end{figure}
+
+\vfill % Fill vertical space to push content to the bottom
+
+\noindent
+{\small 
+\begin{minipage}[b]{1\textwidth}
+    Some example text is taken from: \url{https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes}
+\end{minipage}
+} 
+\vspace{-3mm} % Shift the minipage up by one line. For proper placement
+
+
+\end{document}
